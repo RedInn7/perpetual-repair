@@ -18,11 +18,18 @@ A long-running script that drives the [`claude`](https://docs.anthropic.com/en/d
 flowchart LR
     A["1 · AUDIT<br/>审查 — 1 agent reads repo"] --> F["2 · PARALLEL FIX<br/>并行修复 — N agents, one worktree each"]
     F --> I["3 · INTEGRATE<br/>集成 — merge --no-ff into one branch"]
-    I --> V["4 · VERIFY + REPAIR<br/>校验维修 — build & test green"]
-    V --> L["5 · LAND<br/>开 PR 并合并 — gh pr create + squash"]
+    I --> V["4 · VERIFY + REPAIR<br/>校验维修 — build & test"]
+    V --> G{"build + test green?<br/>校验通过?"}
+    G -- "✓ pass / 通过" --> L["5 · LAND<br/>开 PR 并合并 — gh pr create + squash"]
+    G -- "✗ fail / 不通过" --> X["discard integration<br/>丢弃 · 不开 PR · 不合并"]
     L --> S["6 · SYNC BASE<br/>更新本地 base — fetch fast-forward"]
     S -.->|↻ next round / 下一轮| A
+    X -.->|↻ retry / 重来| A
 ```
+
+> The verification stage is a **gate**: a fix is merged **only after** build + test pass. If verification fails, the whole integration is discarded — nothing is merged — and the issue is retried next round.
+>
+> 校验阶段是一道**门禁**:只有 build + test 通过后才会合并。校验不过则**整轮丢弃、绝不合并**,问题留到下一轮重来。
 
 ---
 
@@ -34,8 +41,8 @@ flowchart LR
 - **Audit** — one agent reads the whole repository and produces structured findings (written to `.perpetual-repair/findings-*.json`).
 - **Parallel fix** — each finding is handed to an independent agent, each working in its own isolated git worktree + branch, so they never overwrite each other. Concurrency is capped by `--max-workers` (default 3).
 - **Integrate** — each fix branch is `merge --no-ff`'d into a single integration branch; a fix that conflicts is automatically skipped and left for a later round, so one conflict never ruins the whole round.
-- **Verify + repair** — one agent runs build / test on the integration branch and fixes any regressions the merge introduced, until green; the script then independently re-checks the build once more.
-- **Land** — `gh pr create` + `gh pr merge --squash`, then the local base branch is fast-forwarded to the remote (no checkout, your working tree is never touched).
+- **Verify + repair (the gate)** — one agent runs build / test on the integration branch and fixes any regressions the merge introduced, until green; the script then independently re-checks the build once more. This is a hard gate: **only an integration that passes proceeds to Land.** If it cannot be made green, the whole integration is discarded — nothing is opened or merged — and the issue is retried on the next round.
+- **Land** — reached **only after verification passes**: `gh pr create` + `gh pr merge --squash`, then the local base branch is fast-forwarded to the remote (no checkout, your working tree is never touched).
 - **Perpetual** — round after round; after several rounds with no new findings it goes into a long idle sleep, then audits again. `Ctrl-C` exits gracefully after the current round finishes (press again to force-quit).
 
 Works on a repository in **any language** — the verification commands are configurable (default is Go; swap in any `build` / `test` command).
@@ -118,8 +125,8 @@ Run it only on repositories and in environments you trust — it will modify cod
 - **审查**：一个 agent 通读整个仓库，产出结构化 findings（写入 `.perpetual-repair/findings-*.json`）。
 - **并行修复**：每个 finding 交给一个独立 agent，各自在隔离的 git worktree + 独立分支里修，互不覆盖。并发数由 `--max-workers` 控制（默认 3）。
 - **集成**：把各修复分支 `merge --no-ff` 到一个集成分支；遇冲突的修复自动跳过、留到下一轮，不让一个冲突毁掉整轮。
-- **校验+维修**：一个 agent 在集成分支上跑 build / test，修掉合并引入的回归，直到绿；脚本侧再独立复核一次 build。
-- **落地**：`gh pr create` + `gh pr merge --squash`，然后把本地 base 分支快进到远端（不切换、不碰你当前工作区）。
+- **校验+维修（门禁）**：一个 agent 在集成分支上跑 build / test，修掉合并引入的回归，直到绿；脚本侧再独立复核一次 build。这是一道硬门禁：**只有校验通过的集成才会进入落地**；若无法修绿，则整轮集成丢弃——不开 PR、不合并——问题留到下一轮重来。
+- **落地**：**只有校验通过后才会到这一步**——`gh pr create` + `gh pr merge --squash`，然后把本地 base 分支快进到远端（不切换、不碰你当前工作区）。
 - **永续**：循环往复；连续若干轮无新发现则进入长休眠，之后再次审查。`Ctrl-C` 在当前轮结束后优雅退出（再按一次强制退出）。
 
 适用于任何语言的仓库——校验命令可配（默认 Go，可换成任意 `build`/`test` 命令）。
