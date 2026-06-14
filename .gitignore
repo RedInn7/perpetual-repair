@@ -1,0 +1,6 @@
+# 运行态产物
+.perpetual-repair/
+*.log
+*.pid
+__pycache__/
+*.pyc
