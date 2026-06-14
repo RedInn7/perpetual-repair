@@ -1,6 +1,6 @@
-<svg width="1280" height="760" viewBox="0 0 1280 760" fill="none" xmlns="http://www.w3.org/2000/svg" font-family="'SF Mono','JetBrains Mono','Fira Code',ui-monospace,monospace">
+<svg width="1280" height="752" viewBox="0 0 1280 752" fill="none" xmlns="http://www.w3.org/2000/svg" font-family="'SF Mono','JetBrains Mono','Fira Code',ui-monospace,monospace">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1280" y2="760" gradientUnits="userSpaceOnUse">
+    <linearGradient id="bg" x1="0" y1="0" x2="1280" y2="752" gradientUnits="userSpaceOnUse">
       <stop offset="0" stop-color="#0A0E14"/>
       <stop offset="1" stop-color="#0E141C"/>
     </linearGradient>
@@ -8,29 +8,34 @@
       <stop offset="0" stop-color="#161E29"/>
       <stop offset="1" stop-color="#101822"/>
     </linearGradient>
+    <linearGradient id="gate" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#13201A"/>
+      <stop offset="1" stop-color="#0E1A15"/>
+    </linearGradient>
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
       <feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#000000" flood-opacity="0.45"/>
     </filter>
-    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="4" result="b"/>
+    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="3.5" result="b"/>
       <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
     </filter>
     <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
       <path d="M0,0 L10,5 L0,10 z" fill="#5B7088"/>
+    </marker>
+    <marker id="arrowPass" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#68D391"/>
+    </marker>
+    <marker id="arrowFail" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#FC8181"/>
     </marker>
     <marker id="arrowLoop" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
       <path d="M0,0 L10,5 L0,10 z" fill="#FC8181"/>
     </marker>
   </defs>
 
-  <rect width="1280" height="760" fill="url(#bg)"/>
-
-  <!-- faint grid texture -->
-  <g stroke="#18222E" stroke-width="1" opacity="0.5">
-    <path d="M0 0H1280M0 760H1280" />
-  </g>
+  <rect width="1280" height="752" fill="url(#bg)"/>
   <g stroke="#141C26" stroke-width="1" opacity="0.6">
-    <path d="M64 0V760M1216 0V760"/>
+    <path d="M64 0V752M1216 0V752"/>
   </g>
 
   <!-- title -->
@@ -40,9 +45,7 @@
 
   <!-- ============ TOP ROW (left -> right) ============ -->
   <!-- 1 AUDIT -->
-  <g filter="url(#shadow)">
-    <rect x="64" y="150" width="336" height="158" rx="16" fill="url(#card)" stroke="#22303F"/>
-  </g>
+  <g filter="url(#shadow)"><rect x="64" y="150" width="336" height="158" rx="16" fill="url(#card)" stroke="#22303F"/></g>
   <rect x="64" y="150" width="336" height="5" rx="2.5" fill="#4FD1C5"/>
   <circle cx="96" cy="190" r="15" fill="#0E1620" stroke="#4FD1C5" stroke-width="1.5"/>
   <text x="96" y="195" fill="#4FD1C5" font-size="15" font-weight="700" text-anchor="middle">1</text>
@@ -55,24 +58,20 @@
   <text x="80" y="300" fill="#46586B" font-size="11.5">structured, ranked by severity</text>
 
   <!-- 2 PARALLEL FIX -->
-  <g filter="url(#shadow)">
-    <rect x="472" y="150" width="336" height="158" rx="16" fill="url(#card)" stroke="#22303F"/>
-  </g>
+  <g filter="url(#shadow)"><rect x="472" y="150" width="336" height="158" rx="16" fill="url(#card)" stroke="#22303F"/></g>
   <rect x="472" y="150" width="336" height="5" rx="2.5" fill="#F6AD55"/>
   <circle cx="504" cy="190" r="15" fill="#0E1620" stroke="#F6AD55" stroke-width="1.5"/>
   <text x="504" y="195" fill="#F6AD55" font-size="15" font-weight="700" text-anchor="middle">2</text>
   <text x="534" y="188" fill="#E6EDF3" font-size="20" font-weight="700">PARALLEL FIX</text>
   <text x="534" y="208" fill="#7C8FA3" font-size="13">并行修复 · one worktree each</text>
-  <rect x="488" y="228" width="150" height="24" rx="12" fill="#0E1620" stroke="#234"/>
+  <rect x="488" y="228" width="180" height="24" rx="12" fill="#0E1620" stroke="#234"/>
   <circle cx="504" cy="240" r="4" fill="#F6AD55"/>
-  <text x="516" y="244" fill="#9FB1C4" font-size="12">N agents · &#8804;max&#8209;workers</text>
+  <text x="516" y="244" fill="#9FB1C4" font-size="12">N agents · &#8804; max&#8209;workers</text>
   <text x="488" y="284" fill="#5B7088" font-size="12.5">isolated branch per finding</text>
   <text x="488" y="300" fill="#46586B" font-size="11.5">minimal focused diff + commit</text>
 
   <!-- 3 INTEGRATE -->
-  <g filter="url(#shadow)">
-    <rect x="880" y="150" width="336" height="158" rx="16" fill="url(#card)" stroke="#22303F"/>
-  </g>
+  <g filter="url(#shadow)"><rect x="880" y="150" width="336" height="158" rx="16" fill="url(#card)" stroke="#22303F"/></g>
   <rect x="880" y="150" width="336" height="5" rx="2.5" fill="#B794F4"/>
   <circle cx="912" cy="190" r="15" fill="#0E1620" stroke="#B794F4" stroke-width="1.5"/>
   <text x="912" y="195" fill="#B794F4" font-size="15" font-weight="700" text-anchor="middle">3</text>
@@ -89,72 +88,89 @@
   <line x1="808" y1="229" x2="880" y2="229" stroke="#5B7088" stroke-width="2" marker-end="url(#arrow)"/>
 
   <!-- down connector (integrate -> verify) -->
-  <path d="M1048 308 V374 H1048" stroke="#5B7088" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+  <path d="M1050 308 V386" stroke="#5B7088" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
 
   <!-- ============ BOTTOM ROW (right -> left) ============ -->
   <!-- 4 VERIFY -->
+  <g filter="url(#shadow)"><rect x="890" y="392" width="326" height="158" rx="16" fill="url(#card)" stroke="#22303F"/></g>
+  <rect x="890" y="392" width="326" height="5" rx="2.5" fill="#68D391"/>
+  <circle cx="922" cy="432" r="15" fill="#0E1620" stroke="#68D391" stroke-width="1.5"/>
+  <text x="922" y="437" fill="#68D391" font-size="15" font-weight="700" text-anchor="middle">4</text>
+  <text x="952" y="430" fill="#E6EDF3" font-size="20" font-weight="700">VERIFY + REPAIR</text>
+  <text x="952" y="450" fill="#7C8FA3" font-size="13">校验维修 · make build &amp; test green</text>
+  <rect x="906" y="470" width="138" height="24" rx="12" fill="#0E1620" stroke="#234"/>
+  <circle cx="922" cy="482" r="4" fill="#68D391"/>
+  <text x="934" y="486" fill="#9FB1C4" font-size="12">1 agent</text>
+  <text x="906" y="526" fill="#5B7088" font-size="12.5">fix merge&#8209;induced regressions, re&#8209;run</text>
+  <text x="906" y="542" fill="#46586B" font-size="11.5">script re&#8209;checks build independently</text>
+
+  <!-- GATE diamond: verification must pass before merge -->
   <g filter="url(#shadow)">
-    <rect x="880" y="392" width="336" height="158" rx="16" fill="url(#card)" stroke="#22303F"/>
+    <path d="M760 419 L815 471 L760 523 L705 471 Z" fill="url(#gate)" stroke="#2F6B4B"/>
   </g>
-  <rect x="880" y="392" width="336" height="5" rx="2.5" fill="#68D391"/>
-  <circle cx="912" cy="432" r="15" fill="#0E1620" stroke="#68D391" stroke-width="1.5"/>
-  <text x="912" y="437" fill="#68D391" font-size="15" font-weight="700" text-anchor="middle">4</text>
-  <text x="942" y="430" fill="#E6EDF3" font-size="20" font-weight="700">VERIFY + REPAIR</text>
-  <text x="942" y="450" fill="#7C8FA3" font-size="13">校验维修 · build &amp; test green</text>
-  <rect x="896" y="470" width="138" height="24" rx="12" fill="#0E1620" stroke="#234"/>
-  <circle cx="912" cy="482" r="4" fill="#68D391"/>
-  <text x="924" y="486" fill="#9FB1C4" font-size="12">1 agent</text>
-  <text x="896" y="526" fill="#5B7088" font-size="12.5">fix merge&#8209;induced regressions</text>
-  <text x="896" y="542" fill="#46586B" font-size="11.5">script re&#8209;checks build independently</text>
+  <text x="760" y="466" fill="#CFE9DC" font-size="12.5" font-weight="600" text-anchor="middle">build+test</text>
+  <text x="760" y="483" fill="#9FB1C4" font-size="12.5" text-anchor="middle">green?</text>
 
   <!-- 5 LAND -->
-  <g filter="url(#shadow)">
-    <rect x="472" y="392" width="336" height="158" rx="16" fill="url(#card)" stroke="#22303F"/>
-  </g>
-  <rect x="472" y="392" width="336" height="5" rx="2.5" fill="#63B3ED"/>
-  <circle cx="504" cy="432" r="15" fill="#0E1620" stroke="#63B3ED" stroke-width="1.5"/>
-  <text x="504" y="437" fill="#63B3ED" font-size="15" font-weight="700" text-anchor="middle">5</text>
-  <text x="534" y="430" fill="#E6EDF3" font-size="20" font-weight="700">LAND</text>
-  <text x="534" y="450" fill="#7C8FA3" font-size="13">开 PR 并合并 · open &amp; merge PR</text>
-  <rect x="488" y="470" width="190" height="24" rx="12" fill="#0E1620" stroke="#234"/>
-  <circle cx="504" cy="482" r="4" fill="#63B3ED"/>
-  <text x="516" y="486" fill="#9FB1C4" font-size="12">gh pr create + merge &#8209;&#8209;squash</text>
-  <text x="488" y="526" fill="#5B7088" font-size="12.5">&#8209;&#8209;no&#8209;land keeps it local for review</text>
-  <text x="488" y="542" fill="#46586B" font-size="11.5">deletes remote branch on merge</text>
+  <g filter="url(#shadow)"><rect x="380" y="392" width="280" height="158" rx="16" fill="url(#card)" stroke="#22303F"/></g>
+  <rect x="380" y="392" width="280" height="5" rx="2.5" fill="#63B3ED"/>
+  <circle cx="412" cy="432" r="15" fill="#0E1620" stroke="#63B3ED" stroke-width="1.5"/>
+  <text x="412" y="437" fill="#63B3ED" font-size="15" font-weight="700" text-anchor="middle">5</text>
+  <text x="442" y="430" fill="#E6EDF3" font-size="20" font-weight="700">LAND</text>
+  <text x="442" y="450" fill="#7C8FA3" font-size="13">开 PR 并合并 · merge</text>
+  <rect x="396" y="470" width="246" height="24" rx="12" fill="#0E1620" stroke="#234"/>
+  <circle cx="412" cy="482" r="4" fill="#63B3ED"/>
+  <text x="424" y="486" fill="#9FB1C4" font-size="12">gh pr create + merge &#8209;&#8209;squash</text>
+  <text x="396" y="526" fill="#5B7088" font-size="12.5">only a verified branch reaches here</text>
+  <text x="396" y="542" fill="#46586B" font-size="11.5">&#8209;&#8209;no&#8209;land keeps it local for review</text>
 
   <!-- 6 SYNC -->
-  <g filter="url(#shadow)">
-    <rect x="64" y="392" width="336" height="158" rx="16" fill="url(#card)" stroke="#22303F"/>
-  </g>
-  <rect x="64" y="392" width="336" height="5" rx="2.5" fill="#FC8181"/>
+  <g filter="url(#shadow)"><rect x="64" y="392" width="280" height="158" rx="16" fill="url(#card)" stroke="#22303F"/></g>
+  <rect x="64" y="392" width="280" height="5" rx="2.5" fill="#FC8181"/>
   <circle cx="96" cy="432" r="15" fill="#0E1620" stroke="#FC8181" stroke-width="1.5"/>
   <text x="96" y="437" fill="#FC8181" font-size="15" font-weight="700" text-anchor="middle">6</text>
   <text x="126" y="430" fill="#E6EDF3" font-size="20" font-weight="700">SYNC BASE</text>
-  <text x="126" y="450" fill="#7C8FA3" font-size="13">更新本地 base · fast&#8209;forward</text>
-  <rect x="80" y="470" width="210" height="24" rx="12" fill="#0E1620" stroke="#234"/>
+  <text x="126" y="450" fill="#7C8FA3" font-size="13">更新 base · fast&#8209;forward</text>
+  <rect x="80" y="470" width="218" height="24" rx="12" fill="#0E1620" stroke="#234"/>
   <circle cx="96" cy="482" r="4" fill="#FC8181"/>
   <text x="108" y="486" fill="#9FB1C4" font-size="12">git fetch origin base:base</text>
   <text x="80" y="526" fill="#5B7088" font-size="12.5">never checks out — your tree untouched</text>
   <text x="80" y="542" fill="#46586B" font-size="11.5">then loop / idle&#8209;sleep if dry</text>
 
-  <!-- bottom horizontal arrows (right -> left) -->
-  <line x1="880" y1="471" x2="808" y2="471" stroke="#5B7088" stroke-width="2" marker-end="url(#arrow)"/>
-  <line x1="472" y1="471" x2="400" y2="471" stroke="#5B7088" stroke-width="2" marker-end="url(#arrow)"/>
+  <!-- bottom flow arrows -->
+  <!-- verify -> gate -->
+  <line x1="890" y1="471" x2="819" y2="471" stroke="#5B7088" stroke-width="2" marker-end="url(#arrow)"/>
+  <!-- gate -> land (PASS) -->
+  <line x1="705" y1="471" x2="664" y2="471" stroke="#68D391" stroke-width="2.5" marker-end="url(#arrowPass)"/>
+  <text x="685" y="456" fill="#68D391" font-size="12" font-weight="700" text-anchor="middle">✓ pass</text>
+  <!-- land -> sync -->
+  <line x1="380" y1="471" x2="348" y2="471" stroke="#5B7088" stroke-width="2" marker-end="url(#arrow)"/>
 
-  <!-- loop back: SYNC up to AUDIT -->
-  <path d="M232 392 V308" stroke="#FC8181" stroke-width="2.5" fill="none" marker-end="url(#arrowLoop)" filter="url(#glow)"/>
-  <rect x="246" y="332" width="118" height="26" rx="13" fill="#1A1014" stroke="#5A2A2E"/>
-  <text x="305" y="349" fill="#FC8181" font-size="12" text-anchor="middle" font-weight="600">↻ next round</text>
+  <!-- success loop back: sync -> audit -->
+  <path d="M204 392 V312" stroke="#FC8181" stroke-width="2.5" fill="none" marker-end="url(#arrowLoop)" filter="url(#glow)"/>
+  <rect x="146" y="334" width="116" height="26" rx="13" fill="#1A1014" stroke="#5A2A2E"/>
+  <text x="204" y="351" fill="#FC8181" font-size="12" text-anchor="middle" font-weight="600">↻ next round</text>
 
-  <!-- isolation footer note -->
-  <g opacity="0.9">
-    <rect x="64" y="612" width="1152" height="84" rx="14" fill="#0D141C" stroke="#1C2733"/>
-    <circle cx="96" cy="654" r="6" fill="#4FD1C5"/>
-    <text x="116" y="650" fill="#9FB1C4" font-size="13" font-weight="600">Isolation&#8209;first</text>
-    <text x="116" y="670" fill="#5B7088" font-size="12">every agent → own worktree + branch · all git mutations under a global lock to avoid index.lock races</text>
-    <circle cx="660" cy="654" r="6" fill="#F6AD55"/>
-    <text x="680" y="650" fill="#9FB1C4" font-size="13" font-weight="600">Failure&#8209;isolated</text>
-    <text x="680" y="670" fill="#5B7088" font-size="12">one bad agent / conflict / failed round only drops that item — the loop keeps running</text>
-    <text x="116" y="690" fill="#46586B" font-size="11.5">deps: claude (headless &#8209;p) · git · python3 · gh (for landing) · build/test cmd configurable for any language</text>
+  <!-- FAIL path: gate fails -> discard, no merge -> retry -->
+  <path d="M760 523 V566" stroke="#FC8181" stroke-width="2.5" fill="none" stroke-dasharray="6 5" marker-end="url(#arrowFail)"/>
+  <text x="772" y="550" fill="#FC8181" font-size="12" font-weight="700">✗ fail</text>
+  <g filter="url(#shadow)"><rect x="470" y="566" width="370" height="40" rx="12" fill="#1A1014" stroke="#5A2A2E"/></g>
+  <circle cx="494" cy="586" r="5" fill="#FC8181"/>
+  <text x="510" y="591" fill="#E7C3C3" font-size="13" font-weight="600">discard integration — no PR, no merge</text>
+  <!-- fail loops back to a fresh audit (left margin lane) -->
+  <path d="M470 586 H34 V229 H58" stroke="#FC8181" stroke-width="2" fill="none" stroke-dasharray="6 5" marker-end="url(#arrowFail)" opacity="0.9"/>
+  <text x="34" y="412" fill="#8a5b5b" font-size="11.5" transform="rotate(-90 34 412)" text-anchor="middle">retry on next round</text>
+
+  <!-- footer note -->
+  <g opacity="0.92">
+    <rect x="864" y="612" width="352" height="120" rx="14" fill="#0D141C" stroke="#1C2733"/>
+    <circle cx="888" cy="642" r="6" fill="#4FD1C5"/>
+    <text x="906" y="638" fill="#9FB1C4" font-size="13" font-weight="600">Isolation&#8209;first</text>
+    <text x="888" y="660" fill="#5B7088" font-size="11.5">each agent → own worktree + branch;</text>
+    <text x="888" y="676" fill="#5B7088" font-size="11.5">git mutations under a global lock.</text>
+    <circle cx="888" cy="698" r="6" fill="#F6AD55"/>
+    <text x="906" y="694" fill="#9FB1C4" font-size="13" font-weight="600">Failure&#8209;isolated</text>
+    <text x="888" y="716" fill="#5B7088" font-size="11.5">one bad agent / conflict / failed verify</text>
+    <text x="888" y="730" fill="#5B7088" font-size="11.5">drops only that item — the loop runs on.</text>
   </g>
 </svg>
