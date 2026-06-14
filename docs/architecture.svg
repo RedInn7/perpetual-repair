@@ -64,7 +64,7 @@
   <text x="504" y="195" fill="#F6AD55" font-size="15" font-weight="700" text-anchor="middle">2</text>
   <text x="534" y="188" fill="#E6EDF3" font-size="20" font-weight="700">PARALLEL FIX</text>
   <text x="534" y="208" fill="#7C8FA3" font-size="13">并行修复 · one worktree each</text>
-  <rect x="488" y="228" width="180" height="24" rx="12" fill="#0E1620" stroke="#234"/>
+  <rect x="488" y="228" width="208" height="24" rx="12" fill="#0E1620" stroke="#234"/>
   <circle cx="504" cy="240" r="4" fill="#F6AD55"/>
   <text x="516" y="244" fill="#9FB1C4" font-size="12">N agents · &#8804; max&#8209;workers</text>
   <text x="488" y="284" fill="#5B7088" font-size="12.5">isolated branch per finding</text>
