@@ -267,12 +267,12 @@ AUDIT_SCHEMA_HINT = """{
   "findings": [
     {
       "id": "short-kebab-id",
-      "title": "一句话问题标题",
+      "title": "one-line issue title",
       "severity": "high | medium | low",
       "category": "bug | security | concurrency | resource-leak | correctness | perf",
-      "files": ["相关文件路径"],
-      "detail": "问题的具体描述与触发条件",
-      "fix_hint": "建议的修复方向"
+      "files": ["relevant/file/path"],
+      "detail": "concrete description of the issue and how it is triggered",
+      "fix_hint": "suggested direction for the fix"
     }
   ]
 }"""
@@ -284,19 +284,19 @@ def phase_audit(cfg: Config, findings_path: Path) -> list[dict]:
     if findings_path.exists():
         findings_path.unlink()
 
-    prompt = f"""你是一名资深代码审查员。请审查这个 Go 仓库，找出**真实存在、可独立修复**的问题。
-优先级：正确性 bug > 并发/竞态 > 资源泄漏 > 安全 > 性能。忽略纯风格问题。
+    prompt = f"""You are a senior code reviewer. Review this repository and find **real, independently fixable** issues.
+Priority order: correctness bugs > concurrency/race conditions > resource leaks > security > performance. Ignore pure style nits.
 
-要求：
-1. 只报你有把握、能定位到具体文件与代码的问题；不要臆测。
-2. 每个 finding 必须是一个能由单个修复者在不依赖其他 finding 的前提下独立完成的工作单元。
-3. 最多报 {cfg.max_findings_per_round} 个，按严重程度排序，取最该先修的。
-4. 把结果**写入文件** `{findings_path}`，JSON 格式，schema 如下：
+Requirements:
+1. Only report issues you are confident about and can pin to specific files and code; do not speculate.
+2. Each finding must be a self-contained unit of work that a single fixer can complete without depending on any other finding.
+3. Report at most {cfg.max_findings_per_round}, ranked by severity, keeping the ones that should be fixed first.
+4. **Write the result to the file** `{findings_path}` as JSON, with the schema below:
 
 {AUDIT_SCHEMA_HINT}
 
-如果确实没有发现值得修的问题，就写入 {{"findings": []}}。
-只输出审查与写文件，不要改动任何源代码。"""
+If there is genuinely nothing worth fixing, write {{"findings": []}}.
+Only review and write the file — do not modify any source code."""
 
     ok, _ = call_claude(
         prompt, cwd=cfg.repo_root, cfg=cfg,
@@ -350,24 +350,24 @@ def phase_fix_one(cfg: Config, finding: dict, round_id: str, idx: int) -> FixRes
     HB.set(f"修复 {fid}")
     wt = add_worktree(cfg, name, branch)
 
-    prompt = f"""你在一个隔离的 git worktree 里，负责修复**下面这一个**问题，不要顺手改别的。
+    prompt = f"""You are in an isolated git worktree. Your job is to fix **this one** issue only — do not touch anything else.
 
-问题：
-- 标题: {finding.get('title')}
-- 严重度: {finding.get('severity')}
-- 类别: {finding.get('category')}
-- 相关文件: {', '.join(finding.get('files', []))}
-- 描述: {finding.get('detail')}
-- 修复方向: {finding.get('fix_hint')}
+Issue:
+- Title: {finding.get('title')}
+- Severity: {finding.get('severity')}
+- Category: {finding.get('category')}
+- Files: {', '.join(finding.get('files', []))}
+- Detail: {finding.get('detail')}
+- Fix hint: {finding.get('fix_hint')}
 
-要求：
-1. 用最小、聚焦的改动修复这个问题；遵循仓库既有代码风格，注释按生产风格写、不要出现"教学/示例"等措辞。
-2. 改完用 `{cfg.build_cmd}` 确认能编译通过；如相关有测试，尽量跑一下。
-3. 编译通过后**提交**：`git add -A && git commit`，提交信息用 Conventional Commits（如 `fix(...): ...`），
-   作者用当前仓库默认配置即可。
-4. 如果你判断这个"问题"其实不成立或无需修改，**不要提交**，并在最后一行输出 `NO_CHANGE: <原因>`。
+Requirements:
+1. Fix it with the smallest, most focused change; follow the repository's existing code style. Write comments in a production tone — no "tutorial/example"-style wording.
+2. After the change, run `{cfg.build_cmd}` to confirm it compiles; if relevant tests exist, try to run them.
+3. Once it builds, **commit**: `git add -A && git commit`, using a Conventional Commits message (e.g. `fix(...): ...`).
+   The current repository's default author config is fine.
+4. If you decide the "issue" does not actually hold or needs no change, **do not commit**, and output `NO_CHANGE: <reason>` on the last line.
 
-只在当前目录工作。"""
+Work only in the current directory."""
 
     ok, text = call_claude(
         prompt, cwd=wt, cfg=cfg,
@@ -448,16 +448,16 @@ def phase_integrate(cfg: Config, fixes: list[FixResult], round_id: str
 
 def phase_verify(cfg: Config, int_wt: Path) -> bool:
     HB.set("校验 + 维修")
-    prompt = f"""你在一个集成了本轮多个修复的 git worktree 里，负责**校验并修好**它，确保可交付。
+    prompt = f"""You are in a git worktree that integrates several fixes from this round. Your job is to **verify and make it green**, so it is shippable.
 
-步骤：
-1. 跑 `{cfg.build_cmd}`，必须通过。
-2. 跑 `{cfg.test_cmd}`；如果有失败，定位并修复（可以是这些修复引入的回归，也可能是合并交互导致）。
-3. 反复"修复→重跑"，直到 build 通过且测试通过（或确认失败与本轮改动无关、本就存在）。
-4. 期间的修复改动要 `git add -A && git commit`，提交信息用 `fix(verify): ...`。
-5. 最后输出一行总结：`VERIFY_OK` 或 `VERIFY_FAIL: <无法解决的原因>`。
+Steps:
+1. Run `{cfg.build_cmd}` — it must pass.
+2. Run `{cfg.test_cmd}`; if anything fails, locate and fix it (it may be a regression introduced by these fixes, or caused by the merge interaction).
+3. Repeat "fix -> re-run" until the build passes and tests pass (or you confirm a failure is unrelated to this round's changes and pre-existing).
+4. Commit any repair changes with `git add -A && git commit`, using a `fix(verify): ...` message.
+5. Finally, output a one-line summary: `VERIFY_OK` or `VERIFY_FAIL: <unresolvable reason>`.
 
-只在当前目录工作。"""
+Work only in the current directory."""
     ok, text = call_claude(
         prompt, cwd=int_wt, cfg=cfg,
         allowed_tools=["Read", "Edit", "Write", "Grep", "Glob", "Bash"],
@@ -484,11 +484,11 @@ def phase_verify(cfg: Config, int_wt: Path) -> bool:
 def phase_land(cfg: Config, int_wt: Path, int_branch: str,
                merged: list[FixResult], round_id: str) -> bool:
     titles = "\n".join(f"- {f.finding.get('title')}" for f in merged)
-    body = f"""自动修复轮次 `{round_id}`，包含 {len(merged)} 项修复：
+    body = f"""Automated repair round `{round_id}`, containing {len(merged)} fix(es):
 
 {titles}
 
-由 perpetual_repair.py 编排：审查 → 并行修复 → 集成 → 校验+维修 自动生成。
+Generated automatically by perpetual_repair.py: audit -> parallel fix -> integrate -> verify+repair.
 """
     title = f"fix(auto-repair): round {round_id} ({len(merged)} fixes)"
 
